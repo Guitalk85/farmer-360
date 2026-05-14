@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Farmer 360 — Ramesh Kumar Patel</title>
+
+<!-- MUI Material Symbols (for icon consistency) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..600,0..1,-50..0" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" />
+
+<style>
+  @property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  @keyframes spin-glow { to { --angle: 360deg; } }
+  @keyframes icon-hue {
+    0%   { color: #d81b60; }
+    33%  { color: #8e24aa; }
+    66%  { color: #3949ab; }
+    100% { color: #d81b60; }
+  }
+  @keyframes sparkle-pulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.15); }
+  }
+
+  :root {
+    /* BFC palette derived from product screenshots */
+    --bfc-green: #2E7D32;
+    --bfc-green-dark: #1B5E20;
+    --bfc-green-light: #E8F5E9;
+    --bfc-green-soft: #F1F8E9;
+
+    --ink-900: #1A1F1B;
+    --ink-700: #3D4843;
+    --ink-500: #6B7570;
+    --ink-300: #B8C0BC;
+    --ink-100: #E8ECEA;
+    --bg: #FAFBFA;
+    --surface: #FFFFFF;
+    --border: #E5E9E7;
+    --border-strong: #D3D9D6;
+
+    --accent-amber: #B45309;
+    --accent-amber-soft: #FEF3C7;
+    --accent-blue: #1565C0;
+    --accent-blue-soft: #E3F2FD;
+    --accent-red: #C62828;
+    --accent-red-soft: #FFEBEE;
+    --accent-purple: #6A1B9A;
+    --accent-purple-soft: #F3E5F5;
+
+    --shadow-sm: 0 1px 2px rgba(16, 30, 24, 0.04);
+    --shadow-md: 0 2px 8px rgba(16, 30, 24, 0.06);
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Roboto', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink-900);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    vertical-align: middle;
+    user-select: none;
+  }
+  .icon-sm { font-size: 16px; }
+  .icon-md { font-size: 18px; }
+  .icon-lg { font-size: 20px; }
+
+  /* ===== App shell ===== */
+  .app {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    background: var(--bfc-green);
+    color: white;
+    padding: 18px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar-brand {
+    padding: 0 20px 18px;
+    font-weight: 700;
+    font-size: 16px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  .nav-group { padding: 14px 0; }
+  .nav-group-title {
+    padding: 4px 20px 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: rgba(255,255,255,0.65);
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 20px;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    font-size: 13.5px;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: white; }
+  .nav-item.active {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-weight: 500;
+    border-left: 3px solid white;
+    padding-left: 17px;
+  }
+
+  /* ===== Top bar ===== */
+  .topbar {
+    background: var(--bfc-green);
+    color: white;
+    padding: 12px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar-loc {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .topbar-actions { display: flex; align-items: center; gap: 16px; }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: white; color: var(--bfc-green);
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 13px;
+  }
+
+  /* ===== Main ===== */
+  main { padding: 24px 32px 60px; max-width: 1180px; }
+
+  .breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--ink-500);
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .breadcrumb a { color: var(--ink-500); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--bfc-green); }
+  .breadcrumb .material-symbols-outlined { font-size: 16px; }
+
+  /* ===== Profile Header ===== */
+  .profile-header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .profile-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 24px;
+  }
+  .profile-identity h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink-900);
+    margin-bottom: 6px;
+    letter-spacing: -0.2px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .verified-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--bfc-green-light);
+    color: var(--bfc-green-dark);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .hero-toggle {
+    background: none;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 5px 10px;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-700);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .hero-toggle:hover { border-color: var(--accent-amber); color: var(--accent-amber); }
+  .hero-toggle.active {
+    background: var(--accent-amber-soft);
+    border-color: #F59E0B;
+    color: var(--accent-amber);
+  }
+  .hero-toggle.active .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1;
+    color: #F59E0B;
+  }
+
+  .profile-meta {
+    display: flex; flex-wrap: wrap; gap: 18px;
+    color: var(--ink-500);
+    font-size: 13px;
+    margin: 6px 0 14px;
+  }
+  .profile-meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .profile-meta .material-symbols-outlined { color: var(--ink-500); }
+
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--bfc-green);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--bfc-green-dark); }
+  .btn-ghost {
+    background: white;
+    color: var(--ink-700);
+    border-color: var(--border-strong);
+  }
+  .btn-ghost:hover { border-color: var(--bfc-green); color: var(--bfc-green); }
+  .btn-danger-ghost {
+    background: white;
+    color: var(--accent-red);
+    border-color: #F5C2C7;
+  }
+  .btn-danger-ghost:hover { background: var(--accent-red-soft); }
+
+  /* Tag row */
+  .tag-row {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+  }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+  .tag .material-symbols-outlined { font-size: 14px; }
+  .tag-interest { background: var(--bfc-green-light); color: var(--bfc-green-dark); }
+  .tag-capability { background: var(--accent-blue-soft); color: var(--accent-blue); }
+  .tag-network { background: var(--accent-amber-soft); color: var(--accent-amber); }
+  .tag-add {
+    background: transparent;
+    border: 1px dashed var(--border-strong);
+    color: var(--ink-500);
+    cursor: pointer;
+  }
+  .tag-add:hover { border-color: var(--bfc-green); color: var(--bfc-green); }
+
+  /* ===== AI Summary panel ===== */
+  .ai-panel {
+    background: linear-gradient(135deg, #F5F4FF 0%, #FAF5FF 50%, #FFF5FA 100%);
+    border-radius: var(--radius-lg);
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    position: relative;
+    padding: 2.5px;
+  }
+  /* Glow ring — slightly darker, more visible */
+  .ai-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    background: conic-gradient(
+      from var(--angle),
+      #e879a0,
+      #a855f7,
+      #6366f1,
+      #60a5fa,
+      #a855f7,
+      #e879a0
+    );
+    animation: spin-glow 3s linear infinite;
+    z-index: 0;
+  }
+  /* Inner fill */
+  .ai-panel::after {
+    content: '';
+    position: absolute;
+    inset: 2.5px;
+    border-radius: calc(var(--radius-lg) - 2px);
+    background: linear-gradient(135deg, #F5F4FF 0%, #FAF5FF 50%, #FFF5FA 100%);
+    z-index: 0;
+  }
+  .ai-panel > * { position: relative; z-index: 1; }
+
+  .ai-panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  .ai-panel-head:hover { background: rgba(255,255,255,0.5); }
+  .ai-panel-title {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 600;
+    color: var(--ink-900);
+    font-size: 14px;
+  }
+  .ai-icon-wrap {
+    width: 32px; height: 32px;
+    background: none;
+    border-radius: 0;
+    display: grid; place-items: center;
+    animation: sparkle-pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  .ai-icon-wrap .material-symbols-outlined {
+    font-size: 28px;
+    font-variation-settings: 'FILL' 1;
+    background: linear-gradient(135deg, #7C3AED 0%, #DB2777 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .ai-panel-meta { color: var(--ink-500); font-size: 12px; }
+  .ai-chevron { transition: transform 0.2s; color: var(--ink-500); }
+  .ai-panel.expanded .ai-chevron { transform: rotate(180deg); }
+
+  .ai-panel-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background: white;
+  }
+  .ai-panel.expanded .ai-panel-body {
+    max-height: 700px;
+  }
+  .ai-panel-inner {
+    padding: 0 20px 20px;
+    border-top: 1px solid rgba(167, 139, 250, 0.25);
+    padding-top: 18px;
+    background: rgba(255, 255, 255, 0.85);
+  }
+
+  /* Loading shimmer */
+  .ai-loading {
+    display: none;
+    padding: 12px 0 4px;
+  }
+  .ai-loading.show { display: block; }
+  .shimmer-line {
+    height: 12px;
+    border-radius: 4px;
+    margin: 8px 0;
+    background: linear-gradient(90deg, #E5E9F5 0%, #F5F7FB 50%, #E5E9F5 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+  }
+  .shimmer-line.w-90 { width: 90%; }
+  .shimmer-line.w-70 { width: 70%; }
+  .shimmer-line.w-80 { width: 80%; }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .ai-content { display: none; }
+  .ai-content.show { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .ai-prediction {
+    background: white;
+    border: 1px solid #D6E0F5;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .ai-prediction-icon {
+    width: 32px; height: 32px;
+    background: var(--accent-blue-soft);
+    color: var(--accent-blue);
+    border-radius: 8px;
+    display: grid; place-items: center;
+  }
+  .ai-prediction-text { flex: 1; }
+  .ai-prediction-label { font-size: 11px; color: var(--ink-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+  .ai-prediction-value { font-size: 14px; font-weight: 600; color: var(--ink-900); }
+  .confidence-badge {
+    font-size: 11px;
+    background: var(--bfc-green-light);
+    color: var(--bfc-green-dark);
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+
+  /* Maturity grid */
+  .maturity-section { margin-bottom: 16px; }
+  .section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ink-500);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .maturity-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .maturity-chip {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bfc-green-soft);
+    border: 1px solid #C8E6C9;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--bfc-green-dark);
+  }
+  .maturity-chip.pending {
+    background: #FAFAFA;
+    border-color: var(--border);
+    color: var(--ink-500);
+  }
+  .maturity-chip .material-symbols-outlined { font-size: 16px; }
+  .maturity-chip.pending .material-symbols-outlined { color: var(--ink-300); }
+
+  /* Metrics row */
+  .metrics-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .metric {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .metric-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--ink-500);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .metric-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink-900);
+    letter-spacing: -0.3px;
+  }
+  .metric-unit { font-size: 13px; color: var(--ink-500); font-weight: 400; }
+
+  /* Insights */
+  .insights-list { margin-top: 16px; }
+  .insight {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 13.5px;
+    color: var(--ink-700);
+    line-height: 1.55;
+  }
+  .insight:last-child { border-bottom: 0; }
+  .insight-icon {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    display: grid; place-items: center;
+    margin-top: 1px;
+  }
+  .insight-icon.green { background: var(--bfc-green-light); color: var(--bfc-green-dark); }
+  .insight-icon.amber { background: var(--accent-amber-soft); color: var(--accent-amber); }
+  .insight-icon.blue { background: var(--accent-blue-soft); color: var(--accent-blue); }
+  .insight-icon .material-symbols-outlined { font-size: 14px; }
+  .insight strong { color: var(--ink-900); font-weight: 600; }
+
+  /* ===== Tabs ===== */
+  .tabs {
+    display: flex; gap: 4px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 18px;
+  }
+  .tab {
+    padding: 10px 16px;
+    color: var(--ink-500);
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  .tab:hover { color: var(--ink-900); }
+  .tab.active {
+    color: var(--bfc-green-dark);
+    border-bottom-color: var(--bfc-green);
+  }
+
+  /* ===== Timeline ===== */
+  .timeline-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+  }
+  .timeline-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .timeline-head h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink-900);
+  }
+  .filter-pills { display: flex; gap: 6px; }
+  .filter-pill {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: white;
+    color: var(--ink-700);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .filter-pill.active {
+    background: var(--bfc-green-dark);
+    color: white;
+    border-color: var(--bfc-green-dark);
+  }
+
+  /* ===== Post composer ===== */
+  .post-composer {
+    background: #FFFDF7;
+    border: 1px solid #F0E5C8;
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    transition: all 0.2s ease;
+  }
+  .post-composer:focus-within {
+    border-color: var(--bfc-green);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.08);
+    background: white;
+  }
+  .composer-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--ink-900);
+    resize: none;
+    min-height: 22px;
+    line-height: 1.5;
+  }
+  .composer-input::placeholder { color: var(--ink-500); }
+  .composer-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+  }
+  .composer-left {
+    display: flex; align-items: center; gap: 4px;
+  }
+  .composer-icon-btn {
+    width: 30px; height: 30px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    display: grid; place-items: center;
+    color: var(--ink-500);
+    transition: all 0.15s;
+  }
+  .composer-icon-btn:hover {
+    background: #F0EBD8;
+    color: var(--bfc-green-dark);
+  }
+  .composer-visibility {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11.5px;
+    color: var(--ink-500);
+    margin-left: 6px;
+  }
+  .composer-visibility .material-symbols-outlined { font-size: 13px; }
+
+  .attachment-preview {
+    display: none;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .attachment-preview.show { display: flex; }
+  .attachment-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 6px 4px 8px;
+    font-size: 12px;
+    color: var(--ink-700);
+  }
+  .attachment-chip .material-symbols-outlined { font-size: 14px; color: var(--accent-blue); }
+  .attachment-chip .remove-btn {
+    width: 18px; height: 18px;
+    border: none;
+    background: transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    display: grid; place-items: center;
+    color: var(--ink-500);
+  }
+  .attachment-chip .remove-btn:hover { background: var(--accent-red-soft); color: var(--accent-red); }
+  .attachment-chip .remove-btn .material-symbols-outlined { font-size: 14px; }
+
+  .btn-post {
+    background: var(--bfc-green);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: inherit;
+  }
+  .btn-post:hover { background: var(--bfc-green-dark); }
+  .btn-post:disabled {
+    background: var(--ink-100);
+    color: var(--ink-500);
+    cursor: not-allowed;
+  }
+
+  /* Note event with images */
+  .note-images {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 8px;
+  }
+  .note-image {
+    width: 88px; height: 88px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #F5F5F5;
+    display: grid; place-items: center;
+    color: var(--ink-500);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+  .note-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+  }
+  .note-image .material-symbols-outlined { font-size: 24px; }
+  .note-image .img-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    font-size: 10px;
+    padding: 3px 6px;
+    text-align: center;
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 8px;
+    bottom: 8px;
+    width: 1.5px;
+    background: var(--border);
+  }
+
+  .event {
+    position: relative;
+    padding: 12px 0 14px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .event:last-child { border-bottom: 0; }
+
+  .event-marker {
+    position: absolute;
+    left: -24px;
+    top: 14px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: white;
+    border: 1.5px solid var(--border-strong);
+    display: grid; place-items: center;
+    z-index: 1;
+  }
+  .event-marker .material-symbols-outlined { font-size: 13px; color: var(--ink-700); }
+
+  /* Event type colors via class */
+  .event-marker.financial { background: var(--bfc-green-light); border-color: #A5D6A7; }
+  .event-marker.financial .material-symbols-outlined { color: var(--bfc-green-dark); }
+  .event-marker.document { background: var(--accent-blue-soft); border-color: #90CAF9; }
+  .event-marker.document .material-symbols-outlined { color: var(--accent-blue); }
+  .event-marker.physical { background: #FFF3E0; border-color: #FFCC80; }
+  .event-marker.physical .material-symbols-outlined { color: #E65100; }
+  .event-marker.communication { background: var(--accent-purple-soft); border-color: #CE93D8; }
+  .event-marker.communication .material-symbols-outlined { color: var(--accent-purple); }
+  .event-marker.system { background: #F5F5F5; border-color: var(--border-strong); }
+
+  .event-row {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 16px;
+  }
+  .event-main { flex: 1; }
+  .event-title {
+    font-weight: 600;
+    color: var(--ink-900);
+    font-size: 14px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .actor-chip {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: #F5F5F5;
+    color: var(--ink-700);
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 500;
+  }
+  .actor-chip .material-symbols-outlined { font-size: 12px; }
+  .actor-chip.auto {
+    background: var(--accent-blue-soft);
+    color: var(--accent-blue);
+  }
+  .event-desc {
+    color: var(--ink-700);
+    font-size: 13px;
+    margin-top: 3px;
+    line-height: 1.55;
+  }
+  .event-time {
+    color: var(--ink-500);
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .event-time .material-symbols-outlined { font-size: 14px; }
+
+  /* Inline hyperlink within event descriptions */
+  .inline-link {
+    color: var(--bfc-green-dark);
+    text-decoration: underline;
+    text-decoration-color: #A5D6A7;
+    text-underline-offset: 2px;
+    font-weight: 500;
+  }
+  .inline-link:hover {
+    color: var(--bfc-green);
+    text-decoration-color: var(--bfc-green);
+  }
+
+  /* Linked record link */
+  .record-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 7px;
+    padding: 4px 9px;
+    background: #F7F9F8;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--bfc-green-dark);
+    font-size: 12.5px;
+    text-decoration: none;
+    font-weight: 500;
+    font-family: 'Roboto Mono', ui-monospace, monospace;
+  }
+  .record-link:hover {
+    background: var(--bfc-green-light);
+    border-color: #A5D6A7;
+  }
+  .record-link .material-symbols-outlined { font-size: 14px; }
+
+  .event-note {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #FFFDF6;
+    border-left: 3px solid #F5C84B;
+    border-radius: 0 6px 6px 0;
+    font-size: 12.5px;
+    color: var(--ink-700);
+    font-style: italic;
+  }
+
+  /* Footer collapsed sections */
+  .accordion {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-top: 10px;
+  }
+  .accordion-head {
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--ink-900);
+    font-size: 14px;
+  }
+  .accordion-head:hover { background: #FAFBFA; }
+  .accordion-head .material-symbols-outlined { color: var(--ink-500); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--ink-300); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--ink-500); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="material-symbols-outlined">eco</span>
+      BiofuelCircle
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Master Data</div>
+      <div class="nav-item active">
+        <span class="material-symbols-outlined icon-md">person</span>
+        Agri-Partners
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined icon-md">precision_manufacturing</span>
+        Equipments
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Biomass</div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined icon-md">south_west</span>
+        Inward Product Deal
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined icon-md">handshake</span>
+        Aggregation Deal
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined icon-md">north_east</span>
+        Outward Product Deal
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined icon-md">local_shipping</span>
+        Transport Deal
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined icon-md">build</span>
+        Equipment Rental Deal
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-title">Operations</div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined icon-md">view_kanban</span>
+        Aggregation Plan
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined icon-md">calendar_month</span>
+        Scheduling
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined icon-md">folder</span>
+        Ledger
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined icon-md">local_gas_station</span>
+        Fuel
+      </div>
+      <div class="nav-item">
+        <span class="material-symbols-outlined icon-md">monitoring</span>
+        Dashboard
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== Right column ===== -->
+  <div>
+    <!-- Top bar -->
+    <div class="topbar">
+      <span class="material-symbols-outlined">menu</span>
+      <div class="topbar-loc">
+        <span class="material-symbols-outlined icon-md">location_on</span>
+        Shirpur Biomass Bank, Jalgaon
+        <span class="material-symbols-outlined icon-sm">expand_more</span>
+      </div>
+      <div class="topbar-actions">
+        <span class="material-symbols-outlined">notifications</span>
+        <div class="avatar">G</div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <main>
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="#">Agri-Partners</a>
+        <span class="material-symbols-outlined">chevron_right</span>
+        <span>Ramesh Kumar Patel</span>
+        <span style="color: var(--ink-300);">·</span>
+        <span style="color: var(--ink-500);">ID 225326</span>
+      </div>
+
+      <!-- ===== Profile Header ===== -->
+      <section class="profile-header">
+        <div class="profile-top">
+          <div class="profile-identity">
+            <h1>
+              Ramesh Kumar Patel
+              <span class="verified-chip">
+                <span class="material-symbols-outlined icon-sm">verified</span>
+                Verified
+              </span>
+              <button class="hero-toggle" id="heroToggle" onclick="toggleHero()">
+                <span class="material-symbols-outlined icon-sm">star</span>
+                <span id="heroLabel">Mark as Hero</span>
+              </button>
+            </h1>
+            <div class="profile-meta">
+              <span><span class="material-symbols-outlined icon-sm">call</span> +91 98765 43210</span>
+              <span><span class="material-symbols-outlined icon-sm">location_on</span> Shirpur Village · 3.2 km to Bank</span>
+              <span><span class="material-symbols-outlined icon-sm">agriculture</span> Sugarcane · 3.5 acres</span>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-ghost">
+              <span class="material-symbols-outlined icon-sm">edit</span> Edit
+            </button>
+            <button class="btn btn-danger-ghost">
+              <span class="material-symbols-outlined icon-sm">block</span> Mark Invalid
+            </button>
+            <button class="btn btn-primary">
+              <span class="material-symbols-outlined icon-sm">check</span> Confirm
+            </button>
+          </div>
+        </div>
+
+        <!-- Tags / capabilities -->
+        <div class="tag-row">
+          <span class="tag tag-interest">
+            <span class="material-symbols-outlined">sell</span> Sell Biomass
+          </span>
+          <span class="tag tag-interest">
+            <span class="material-symbols-outlined">shopping_bag</span> Buy FOM
+          </span>
+          <span class="tag tag-interest">
+            <span class="material-symbols-outlined">build</span> Rent Tractor
+          </span>
+          <span class="tag tag-capability" title="Certified by BiofuelCircle">
+            <span class="material-symbols-outlined">verified_user</span> Certified Driver: Baler
+          </span>
+          <button class="tag tag-add">
+            <span class="material-symbols-outlined">add</span> Add tag
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== Tabs ===== -->
+      <div class="tabs">
+        <div class="tab active">
+          <span class="material-symbols-outlined icon-sm">view_timeline</span>
+          Activity
+        </div>
+        <div class="tab">
+          <span class="material-symbols-outlined icon-sm">person</span>
+          Profile Details
+        </div>
+        <div class="tab">
+          <span class="material-symbols-outlined icon-sm">map</span>
+          Farm & GIS
+        </div>
+        <div class="tab">
+          <span class="material-symbols-outlined icon-sm">payments</span>
+          Ledger
+        </div>
+        <div class="tab">
+          <span class="material-symbols-outlined icon-sm">history</span>
+          History
+        </div>
+      </div>
+
+      <!-- ===== Activity Timeline ===== -->
+      <section class="timeline-section">
+
+        <!-- AI Summary Panel (lives inside Activity tab) -->
+        <div class="ai-panel" id="aiPanel" style="margin-bottom: 18px;">
+          <div class="ai-panel-head" onclick="toggleAIPanel()">
+            <div class="ai-panel-title">
+              <div class="ai-icon-wrap">
+                <span class="material-symbols-outlined">auto_awesome</span>
+              </div>
+              <div>
+                <div>AI Summary of Activity</div>
+                <div class="ai-panel-meta" id="aiPanelMeta">Click to generate an instant overview from this farmer's activity</div>
+              </div>
+            </div>
+            <span class="material-symbols-outlined ai-chevron">expand_more</span>
+          </div>
+
+          <div class="ai-panel-body">
+            <div class="ai-panel-inner">
+
+              <!-- Loading state -->
+              <div class="ai-loading" id="aiLoading">
+                <div class="shimmer-line w-80"></div>
+                <div class="shimmer-line w-90"></div>
+                <div class="shimmer-line w-70"></div>
+              </div>
+
+              <!-- Generated content -->
+              <div class="ai-content" id="aiContent">
+
+                <!-- AI prediction headline -->
+                <div class="ai-prediction">
+                  <div class="ai-prediction-icon">
+                    <span class="material-symbols-outlined">auto_awesome</span>
+                  </div>
+                  <div class="ai-prediction-text">
+                    <div class="ai-prediction-label">Harvest Prediction</div>
+                    <div class="ai-prediction-value">Harvest window in 12–14 days</div>
+                  </div>
+                </div>
+
+                <!-- Maturity status -->
+                <div class="maturity-section">
+                  <div class="section-title">Farmer Maturity Status</div>
+                  <div class="maturity-grid">
+                    <div class="maturity-chip">
+                      <span class="material-symbols-outlined">check_circle</span> Basic Data Captured
+                    </div>
+                    <div class="maturity-chip">
+                      <span class="material-symbols-outlined">check_circle</span> Salesperson Meeting
+                    </div>
+                    <div class="maturity-chip">
+                      <span class="material-symbols-outlined">check_circle</span> Farm Location Mapped
+                    </div>
+                    <div class="maturity-chip">
+                      <span class="material-symbols-outlined">check_circle</span> Harvest Date Recorded
+                    </div>
+                    <div class="maturity-chip">
+                      <span class="material-symbols-outlined">check_circle</span> Transaction History
+                    </div>
+                    <div class="maturity-chip pending">
+                      <span class="material-symbols-outlined">radio_button_unchecked</span> Interest Revalidated
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Metrics -->
+                <div class="maturity-section">
+                  <div class="section-title">Key Metrics</div>
+                  <div class="metrics-row">
+                    <div class="metric">
+                      <div class="metric-label">Total Biomass</div>
+                      <div class="metric-value">8.2 <span class="metric-unit">MT</span></div>
+                    </div>
+                    <div class="metric">
+                      <div class="metric-label">FOM Utilized</div>
+                      <div class="metric-value">12 <span class="metric-unit">Bags</span></div>
+                    </div>
+                    <div class="metric">
+                      <div class="metric-label">Net Settled</div>
+                      <div class="metric-value">₹4,850</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Insights -->
+                <div class="insights-list">
+                  <div class="insight">
+                    <div class="insight-icon green"><span class="material-symbols-outlined">trending_up</span></div>
+                    <div>Consistent supplier — <strong>5 settled transactions</strong> in the last 6 months with no payment disputes.</div>
+                  </div>
+                  <div class="insight">
+                    <div class="insight-icon amber"><span class="material-symbols-outlined">priority_high</span></div>
+                    <div>Action required: <strong>Interest revalidation pending.</strong> Last touchpoint was 38 days ago.</div>
+                  </div>
+                  <div class="insight">
+                    <div class="insight-icon blue"><span class="material-symbols-outlined">lightbulb</span></div>
+                    <div>Expressed interest in <strong>renting a tractor</strong> — no tractor currently onboarded in this catchment. Equipment gap.</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-head">
+          <h2>Activity Timeline</h2>
+        </div>
+
+        <!-- Post composer -->
+        <div class="post-composer">
+          <textarea
+            class="composer-input"
+            id="composerInput"
+            placeholder="Post an internal note about Ramesh — visible to your team only…"
+            rows="1"
+            oninput="autoGrow(this); toggleSubmit()"
+          ></textarea>
+          <div class="attachment-preview" id="attachmentPreview"></div>
+          <div class="composer-footer">
+            <div class="composer-left">
+              <button class="composer-icon-btn" title="Attach image" onclick="addAttachment('image')">
+                <span class="material-symbols-outlined icon-md">image</span>
+              </button>
+              <button class="composer-icon-btn" title="Attach file" onclick="addAttachment('file')">
+                <span class="material-symbols-outlined icon-md">attach_file</span>
+              </button>
+              <button class="composer-icon-btn" title="Mention teammate">
+                <span class="material-symbols-outlined icon-md">alternate_email</span>
+              </button>
+              <button class="composer-icon-btn" title="Add location">
+                <span class="material-symbols-outlined icon-md">location_on</span>
+              </button>
+              <span class="composer-visibility">
+                <span class="material-symbols-outlined">lock</span> Internal · team only
+              </span>
+            </div>
+            <button class="btn-post" id="postBtn" disabled onclick="submitPost()">
+              <span class="material-symbols-outlined icon-sm">send</span> Post
+            </button>
+          </div>
+        </div>
+
+        <div class="timeline" id="timeline">
+
+          <!-- Example: a posted field note with images (so team sees how it appears) -->
+          <div class="event">
+            <div class="event-marker communication">
+              <span class="material-symbols-outlined">sticky_note_2</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">
+                  Field Note
+                  <span class="actor-chip"><span class="material-symbols-outlined">person</span> Neha Kulkarni</span>
+                </div>
+                <div class="event-note" style="margin-top: 6px;">
+                  Visited Ramesh today. Sugarcane standing well, but a 10×6 m patch near the south boundary has lodged due to last week's wind. He's asking if we can prioritise his pickup — worried about quality loss. Will follow up Thursday.
+                </div>
+                <div class="note-images">
+                  <div class="note-image" style="background: linear-gradient(135deg, #C8E6C9, #81C784);">
+                    <span class="material-symbols-outlined" style="color: rgba(255,255,255,0.9);">image</span>
+                    <div class="img-label">Field view</div>
+                  </div>
+                  <div class="note-image" style="background: linear-gradient(135deg, #A1887F, #8D6E63);">
+                    <span class="material-symbols-outlined" style="color: rgba(255,255,255,0.9);">image</span>
+                    <div class="img-label">Lodged patch</div>
+                  </div>
+                </div>
+              </div>
+              <span class="event-time">
+                <span class="material-symbols-outlined">schedule</span> 1h ago
+              </span>
+            </div>
+          </div>
+
+          <div class="event">
+            <div class="event-marker financial">
+              <span class="material-symbols-outlined">currency_rupee</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">Payment Settled <span class="actor-chip auto"><span class="material-symbols-outlined">bolt</span> Auto</span></div>
+                <div class="event-desc">₹1,245 transferred via <a href="#" class="inline-link">TXN-UPI/426891234567</a> to State Bank A/C ****6789.</div>
+              </div>
+              <span class="event-time"><span class="material-symbols-outlined">schedule</span> 4h ago</span>
+            </div>
+          </div>
+
+          <div class="event">
+            <div class="event-marker document">
+              <span class="material-symbols-outlined">description</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">Invoice Generated <span class="actor-chip auto"><span class="material-symbols-outlined">bolt</span> Auto</span></div>
+                <div class="event-desc"><a href="#" class="inline-link">INV-126MH16521</a> raised for 1.8 MT @ ₹692/MT — total ₹1,245.</div>
+              </div>
+              <span class="event-time"><span class="material-symbols-outlined">schedule</span> 6h ago</span>
+            </div>
+          </div>
+
+          <div class="event">
+            <div class="event-marker physical">
+              <span class="material-symbols-outlined">scale</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">Biomass Picked <span class="actor-chip"><span class="material-symbols-outlined">person</span> Vijay Sharma</span></div>
+                <div class="event-desc">Vijay Sharma picked up <a href="#" class="inline-link">1.8 MT Sugarcane</a> from farmer, recorded via weigh-bridge <a href="#" class="inline-link">WS-2456</a>.</div>
+              </div>
+              <span class="event-time"><span class="material-symbols-outlined">schedule</span> 5h ago</span>
+            </div>
+          </div>
+
+          <div class="event">
+            <div class="event-marker physical">
+              <span class="material-symbols-outlined">grass</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">Extraction Complete <span class="actor-chip"><span class="material-symbols-outlined">person</span> Suresh Patil</span></div>
+                <div class="event-desc">Field cleared and biomass collected in 3.5 hours — see <a href="#" class="inline-link">EXT-1142</a>.</div>
+              </div>
+              <span class="event-time"><span class="material-symbols-outlined">schedule</span> 6h ago</span>
+            </div>
+          </div>
+
+          <div class="event">
+            <div class="event-marker physical">
+              <span class="material-symbols-outlined">inventory_2</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">FOM Delivered <span class="actor-chip"><span class="material-symbols-outlined">person</span> Rajesh Desai</span></div>
+                <div class="event-desc">Rajesh Desai delivered <a href="#" class="inline-link">8 bags of FOM</a> to farmer and collected ₹3,600 — see <a href="#" class="inline-link">DEL-8821</a>.</div>
+              </div>
+              <span class="event-time"><span class="material-symbols-outlined">schedule</span> 18h ago</span>
+            </div>
+          </div>
+
+          <div class="event">
+            <div class="event-marker physical">
+              <span class="material-symbols-outlined">local_shipping</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">ABC Baler Dispatched <span class="actor-chip"><span class="material-symbols-outlined">person</span> Priya Mehta</span></div>
+                <div class="event-desc">ABC Baler (Vehicle <a href="#" class="inline-link">MH16-BA-4521</a>) dispatched to Shirpur Village — logged in <a href="#" class="inline-link">LEDGER-DSP-3091</a>.</div>
+              </div>
+              <span class="event-time"><span class="material-symbols-outlined">schedule</span> 1d ago</span>
+            </div>
+          </div>
+
+          <div class="event">
+            <div class="event-marker physical">
+              <span class="material-symbols-outlined">build</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">Slasher Scheduled <span class="actor-chip"><span class="material-symbols-outlined">person</span> Amit Joshi</span></div>
+                <div class="event-desc">Pre-extraction slasher assigned for March 14, 09:00 AM — see <a href="#" class="inline-link">SCH-7741</a>.</div>
+              </div>
+              <span class="event-time"><span class="material-symbols-outlined">schedule</span> 2d ago</span>
+            </div>
+          </div>
+
+          <div class="event">
+            <div class="event-marker communication">
+              <span class="material-symbols-outlined">call</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">Rural Ops Called Farmer <span class="actor-chip"><span class="material-symbols-outlined">person</span> Neha Kulkarni</span></div>
+                <div class="event-desc">T-1 scheduling call, 8 mins — confirmed harvest date and equipment needs.</div>
+                <div class="event-note">"Farmer confirmed field will be ready by March 14. Requested baler for 3.5 acres. Discussed FOM delivery schedule."</div>
+              </div>
+              <span class="event-time"><span class="material-symbols-outlined">schedule</span> 3d ago</span>
+            </div>
+          </div>
+
+          <div class="event">
+            <div class="event-marker document">
+              <span class="material-symbols-outlined">account_balance</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">Bank Details Verified <span class="actor-chip"><span class="material-symbols-outlined">person</span> Kavita Rane</span></div>
+                <div class="event-desc">KYC approved — State Bank A/C ****6789 confirmed active.</div>
+              </div>
+              <span class="event-time"><span class="material-symbols-outlined">schedule</span> 3d ago</span>
+            </div>
+          </div>
+
+          <div class="event">
+            <div class="event-marker physical">
+              <span class="material-symbols-outlined">satellite_alt</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">GIS Mapping Complete <span class="actor-chip"><span class="material-symbols-outlined">person</span> Anil Patwardhan</span></div>
+                <div class="event-desc"><a href="#" class="inline-link">Farm polygon GIS-POLY-1142</a> digitized — 3.5 acres verified at 20.8421°N, 74.2945°E.</div>
+              </div>
+              <span class="event-time"><span class="material-symbols-outlined">schedule</span> 5d ago</span>
+            </div>
+          </div>
+
+          <div class="event">
+            <div class="event-marker system">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <div class="event-row">
+              <div class="event-main">
+                <div class="event-title">Farmer Profile Created <span class="actor-chip"><span class="material-symbols-outlined">smart_toy</span> clapppia_user</span></div>
+                <div class="event-desc">Initial farmer record created with basic details.</div>
+              </div>
+              <span class="event-time"><span class="material-symbols-outlined">schedule</span> Nov 28, 2025</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Secondary accordions -->
+      <div class="accordion">
+        <div class="accordion-head">
+          <span><span class="material-symbols-outlined icon-md" style="margin-right: 8px;">map</span> Farm Details & GIS Mapping</span>
+          <span class="material-symbols-outlined">expand_more</span>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-head">
+          <span><span class="material-symbols-outlined icon-md" style="margin-right: 8px;">payments</span> Ledger & Cashflow</span>
+          <span class="material-symbols-outlined">expand_more</span>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-head">
+          <span><span class="material-symbols-outlined icon-md" style="margin-right: 8px;">folder</span> Media & Documents</span>
+          <span class="material-symbols-outlined">expand_more</span>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // Hero toggle
+  let heroActive = false;
+  function toggleHero() {
+    heroActive = !heroActive;
+    const btn = document.getElementById('heroToggle');
+    const label = document.getElementById('heroLabel');
+    if (heroActive) {
+      btn.classList.add('active');
+      label.textContent = 'Hero';
+    } else {
+      btn.classList.remove('active');
+      label.textContent = 'Mark as Hero';
+    }
+  }
+
+  // AI Summary panel
+  let aiPanelOpen = false;
+  let aiGenerated = false;
+  function toggleAIPanel() {
+    const panel = document.getElementById('aiPanel');
+    const meta = document.getElementById('aiPanelMeta');
+    const loading = document.getElementById('aiLoading');
+    const content = document.getElementById('aiContent');
+
+    aiPanelOpen = !aiPanelOpen;
+    panel.classList.toggle('expanded', aiPanelOpen);
+
+    if (aiPanelOpen && !aiGenerated) {
+      // Simulate AI generation
+      meta.textContent = 'Generating overview…';
+      loading.classList.add('show');
+      content.classList.remove('show');
+
+      setTimeout(() => {
+        loading.classList.remove('show');
+        content.classList.add('show');
+        meta.textContent = 'Generated just now · Click to collapse';
+        aiGenerated = true;
+      }, 1100);
+    } else if (aiPanelOpen && aiGenerated) {
+      meta.textContent = 'Generated just now · Click to collapse';
+    } else {
+      meta.textContent = aiGenerated ? 'Click to expand' : 'Click to generate an instant overview of this farmer';
+    }
+  }
+
+  // Composer behavior
+  let attachments = [];
+
+  function autoGrow(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+  }
+
+  function toggleSubmit() {
+    const input = document.getElementById('composerInput');
+    const btn = document.getElementById('postBtn');
+    btn.disabled = input.value.trim().length === 0 && attachments.length === 0;
+  }
+
+  function addAttachment(type) {
+    const id = Date.now();
+    const label = type === 'image'
+      ? ['Field photo 1.jpg', 'Damaged crop.jpg', 'Receipt.jpg', 'Signed slip.jpg'][attachments.length % 4]
+      : ['Note.pdf', 'Inspection.pdf', 'Quote.pdf'][attachments.length % 3];
+    attachments.push({ id, type, label });
+    renderAttachments();
+    toggleSubmit();
+  }
+
+  function removeAttachment(id) {
+    attachments = attachments.filter(a => a.id !== id);
+    renderAttachments();
+    toggleSubmit();
+  }
+
+  function renderAttachments() {
+    const container = document.getElementById('attachmentPreview');
+    container.classList.toggle('show', attachments.length > 0);
+    container.innerHTML = attachments.map(a => `
+      <div class="attachment-chip">
+        <span class="material-symbols-outlined">${a.type === 'image' ? 'image' : 'description'}</span>
+        ${a.label}
+        <button class="remove-btn" onclick="removeAttachment(${a.id})" title="Remove">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    `).join('');
+  }
+
+  function submitPost() {
+    const input = document.getElementById('composerInput');
+    const text = input.value.trim();
+    if (!text && attachments.length === 0) return;
+
+    const timeline = document.getElementById('timeline');
+    const imagesHTML = attachments.filter(a => a.type === 'image').map((a, i) => `
+      <div class="note-image" style="background: linear-gradient(135deg, ${['#90CAF9','#FFCC80','#A5D6A7','#CE93D8'][i % 4]}, ${['#1565C0','#E65100','#2E7D32','#6A1B9A'][i % 4]});">
+        <span class="material-symbols-outlined" style="color: rgba(255,255,255,0.9);">image</span>
+        <div class="img-label">${a.label.replace('.jpg', '')}</div>
+      </div>
+    `).join('');
+    const filesHTML = attachments.filter(a => a.type !== 'image').map(a => `
+      <a href="#" class="record-link" style="margin-right: 6px;">
+        <span class="material-symbols-outlined">description</span> ${a.label}
+      </a>
+    `).join('');
+
+    const newEvent = document.createElement('div');
+    newEvent.className = 'event';
+    newEvent.innerHTML = `
+      <div class="event-marker communication">
+        <span class="material-symbols-outlined">sticky_note_2</span>
+      </div>
+      <div class="event-row">
+        <div class="event-main">
+          <div class="event-title">
+            Field Note
+            <span class="actor-chip"><span class="material-symbols-outlined">person</span> You</span>
+          </div>
+          ${text ? `<div class="event-note" style="margin-top: 6px;">${text.replace(/</g, '&lt;')}</div>` : ''}
+          ${imagesHTML ? `<div class="note-images">${imagesHTML}</div>` : ''}
+          ${filesHTML ? `<div style="margin-top: 8px;">${filesHTML}</div>` : ''}
+        </div>
+        <span class="event-time">
+          <span class="material-symbols-outlined">schedule</span> Just now
+        </span>
+      </div>
+    `;
+    timeline.insertBefore(newEvent, timeline.firstChild);
+
+    // Reset composer
+    input.value = '';
+    input.style.height = 'auto';
+    attachments = [];
+    renderAttachments();
+    toggleSubmit();
+  }
+</script>
+
+</body>
+</html>
